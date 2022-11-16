@@ -1,0 +1,23 @@
+{
+  "name": "__PKG_NAME",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prebuild": "node prebuild.mjs",
+    "build": "npm run build-ts",
+    "build-ts": "tsc",
+    "postbuild": "node postbuild.mjs"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.4.1",
+    "@types/shelljs": "^0.8.11",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
+    "@typescript-eslint/parser": "^5.10.2",
+    "eslint": "^8.22.0",
+    "shelljs": "^0.8.5",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.8.2"
+  }
+}
