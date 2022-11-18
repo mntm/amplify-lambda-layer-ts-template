@@ -63,12 +63,9 @@ try {
     shell.echo(result.stderr);
   }
 
-  result = shell.mv(
-    "package.json",
-    path.join("node_modules", "__PKG_NAME", "package.json")
-  );
+  result = shell.cp("-ru", builddir, path.join("node_modules", "__PKG_NAME"));
   if (result.code !== 0) {
-    shell.echo("Error: mv package.json to __PKG_NAME failed");
+    shell.echo(`Error: cp ${builddir} to __PKG_NAME failed`);
     shell.echo(result.stderr);
   }
 
