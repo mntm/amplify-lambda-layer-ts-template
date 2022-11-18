@@ -1,8 +1,8 @@
 import fs from "fs";
+import glob from "glob";
+import path from "path";
 import { exit } from "process";
 import shell from "shelljs";
-import path from "path";
-import glob from "glob";
 
 const O_CWD = process.cwd();
 const builddir = path.join(O_CWD, "build");

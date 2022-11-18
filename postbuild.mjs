@@ -1,7 +1,7 @@
 import fs from "fs";
+import path from "path";
 import { exit } from "process";
 import shell from "shelljs";
-import path from "path";
 
 const O_CWD = process.cwd();
 const libdir = path.join(O_CWD, "lib", "nodejs");
