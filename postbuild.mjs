@@ -41,9 +41,23 @@ try {
       Buffer.from(JSON.stringify(packages, null, 2))
     );
   }
-  shell.cd(libdir);
 
-  let result = shell.rm(path.join("node_modules", ".package-lock.json"));
+  copyFileSync("./package.json", path.join(libdir, "package.json"), (data) => {
+    const packages = JSON.parse(data.toString());
+    delete packages.devDependencies;
+    delete packages.scripts;
+    return Buffer.from(JSON.stringify(packages, null, 2));
+  });
+
+  shell.cd(libdir);
+  let result = shell.exec("npm install --no-package-lock --omit dev");
+  if (result.code !== 0) {
+    shell.echo("Error: npm install --no-package-lock --omit dev failed");
+    shell.echo(result.stderr);
+    exit(2);
+  }
+
+  result = shell.rm(path.join("node_modules", ".package-lock.json"));
   if (result.code !== 0) {
     shell.echo("Error: rm .package-lock.json failed");
     shell.echo(result.stderr);
