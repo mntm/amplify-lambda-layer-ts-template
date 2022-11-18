@@ -5,8 +5,42 @@ import path from "path";
 
 const O_CWD = process.cwd();
 const libdir = path.join(O_CWD, "lib", "nodejs");
+const builddir = path.join(O_CWD, "build");
+
+/**
+ *
+ * @param {string} src
+ * @param {string} dest
+ * @param {(data: Buffer)=>Buffer} [action]
+ */
+function copyFileSync(src, dest, action) {
+  const data = fs.readFileSync(src);
+  const processed = action?.(data);
+  const toWrite = processed ?? data;
+  fs.writeFileSync(dest, toWrite.toString());
+}
 
 try {
+  shell.cd(builddir);
+  const o_buildhash = fs.readFileSync(".buildhash").toString();
+  shell.exec("sha256sum .tsbuildinfo").to(".buildhash");
+  const n_buildhash = fs.readFileSync(".buildhash").toString();
+  shell.cd(O_CWD);
+
+  if (n_buildhash !== o_buildhash) {
+    /**
+     * @type {{version: string}}
+     */
+    const packages = JSON.parse(fs.readFileSync("package.json"));
+    const verComponents = packages.version.split(".");
+    let buildNum = Number(verComponents[2]) || 0;
+    verComponents[2] = "" + ++buildNum;
+    packages.version = verComponents.join(".");
+    fs.writeFileSync(
+      "package.json",
+      Buffer.from(JSON.stringify(packages, null, 2))
+    );
+  }
   shell.cd(libdir);
 
   let result = shell.rm(path.join("node_modules", ".package-lock.json"));
