@@ -19,7 +19,28 @@ function copyFileSync(src, dest, action) {
   fs.writeFileSync(dest, toWrite.toString());
 }
 
+function generateExportInIndex() {
+  const files = glob.sync("src/**/*.ts");
+  const filtered = files
+    .filter((path) => !/(__tests__|__mocks__|index\.ts|\.d\.ts$)/g.test(path))
+    .map(
+      (file) =>
+        `export * from "${file.replace("src", ".").replace(/\.ts$/, ".js")}"\n`
+    );
+  console.table(filtered);
+  if (filtered.length) {
+    fs.writeFileSync("src/index.ts", filtered.shift(), {
+      mode: fs.constants.O_TRUNC,
+    });
+    filtered.forEach((i) => {
+      fs.appendFileSync("src/index.ts", i);
+    });
+  }
+}
+
 try {
+  generateExportInIndex();
+
   copyFileSync("./package.json", path.join(libdir, "package.json"), (data) => {
     const packages = JSON.parse(data.toString());
     delete packages.devDependencies;
