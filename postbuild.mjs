@@ -68,7 +68,7 @@ try {
     shell.echo(`Error: cp ${builddir} to __PKG_NAME failed`);
     shell.echo(result.stderr);
   }
-
+  shell.cp("package.json", path.join("node_modules", "__PKG_NAME"));
   shell.cd(O_CWD);
 } catch (error) {
   console.error(error);
